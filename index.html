@@ -135,7 +135,7 @@
                                 <div class="fin-subheading">
                                     &middot; PLAY TO WIN &middot;
                                 </div>
-                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="https://discord.gg/FFKFg5q9tz" target="_blank"> DISCORD CLICK HERE </a></i></span>
+                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="https://discord.gg/actavis" target="_blank"> DISCORD CLICK HERE </a></i></span>
                             </div>
                         </div>
                     </div>
@@ -241,7 +241,6 @@
                                     ryudev<br>
                                     <a>undeath#2933</a>
                                     <a>| WebDeveloper<br></a>
-                                    <a>| Cheapest Services<br></a>
                                 </p>
                                 <p>
                                     Panda<br>
@@ -249,7 +248,7 @@
                                     <a>| Provider<br></a>
                                     <a href="https://www.youtube.com/watch?v=anMplSsHUxM" target="_blank">|
                                         Youtube<br></a>
-                                    <a href="https://www.tiktok.com/@pandatm9?lang=en" target="_blank">| Tiktok<br></a>
+                                    <a href="" target="_blank">| Tiktok<br></a>
                                     <a>| Cheapest Resells<br></a>
                                 </p>
                             </div>
@@ -260,24 +259,42 @@
         </div>
     </div>
 
-    <!--JS SCRIPTS INCLUDE -->
+    <!-- Undetected on R7 Message -->
+    <div class="undetected-msg" style="text-align:center; font-size:20px; color:white; margin-top:10px;">
+        <strong>Fully Undetected on R7</strong>
+    </div>
 
+    <!-- FAQ Section -->
+    <div class="faq-container" style="max-width: 600px; margin: auto; padding: 20px; color: white;">
+        <h2 style="text-align:center;">FAQ</h2>
+        <div class="faq-item">
+            <button class="faq-question">Do I get banned using cheats? <span>+</span></button>
+            <div class="faq-answer">No, our products are fully undetected.</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">Do I receive the product right after purchase? <span>+</span></button>
+            <div class="faq-answer">Yes, delivery is by email and it's instant.</div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">Why should I buy from here? <span>+</span></button>
+            <div class="faq-answer">24/7 support on our Discord server.</div>
+        </div>
+    </div>
+
+    <!-- BUY NOW Button -->
+    <div style="text-align:center; margin-top: 20px;">
+        <a href="https://sellauth.com" style="background-color:red; color:white; padding: 15px 30px; font-size:20px; text-decoration:none; border-radius:5px; display:inline-block;">BUY NOW</a>
+
+    <!--JS SCRIPTS INCLUDE -->
     <script>
-        var play = false;
-        var vid = document.getElementById("muzica");
-        vid.volume = 0.1;
-        window.addEventListener('keyup', function (e) {
-            if (e.which == 69) {
-                vid.volume = Math.min(vid.volume + 0.1, 1);
-            } else if (e.which == 65) {
-                vid.volume = Math.max(vid.volume - 0.1, 0);
-            };
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', function () {
+                this.classList.toggle('active');
+                let answer = this.nextElementSibling;
+                answer.style.display = (answer.style.display === 'block') ? 'none' : 'block';
+            });
         });
     </script>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
-    <script src="assets/js/plugins.js" type="text/javascript"></script>
-    <script src="assets/js/main.js" type="text/javascript"></script>
-
     <!--END OF JS SCRIPTS INCLUDE -->
 
 </body>
