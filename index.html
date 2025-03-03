@@ -1,114 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt_BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Log System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #343a40;
-            color: white;
-        }
-        .status-opened {
-            color: #007bff;
-            font-weight: bold;
-        }
-        .status-delivered {
-            color: #198754;
-            font-weight: bold;
-        }
-        .status-sent {
-            color: #6c757d;
-            font-weight: bold;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <meta content="" name="keywords">
+    <title>Actavis Cheats</title>
+    <meta
+        content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi"
+        name="viewport">
+
+    <!--CSS INCLUDES -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link href="assets/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
+    <link href="assets/css/style-dark.css" media="all" rel="stylesheet" type="text/css">
+    <link href="assets/css/css.css" rel="stylesheet">
+    <link href="assets/css/fontawesome-all.min.css" media="all" rel="stylesheet" type="text/css">
+    <link href="assets/css/colors/yellow-2.css" media="screen" rel="stylesheet" title="yellow-2" type="text/css">
+    <link
+        href="http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900%7CDosis:200,300,400,500,600,700,800%7COswald:300,400,700%7CMontserrat:400,700"
+        rel="stylesheet" type="text/css">
 </head>
+
 <body>
-    <div class="container">
-        <h2>Email Log System</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Event</th>
-                    <th>Recipient</th>
-                    <th>Subject</th>
-                    <th>Date & Time</th>
-                    <th>Tag</th>
-                </tr>
-            </thead>
-            <tbody id="log-body">
-                <!-- Rows will be inserted dynamically -->
-            </tbody>
-        </table>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position preloader-effect">
+                <span></span>
+            </div>
+        </div>
     </div>
 
+    <div class="hero-fullscreen hero-bg">
+        <div class="slide-YT hero-fullscreen">
+            <div class="slide bg-img-YT"></div>
+            <div id="videoContainment"></div>
+            <a class="player"
+                data-property="{videoURL:'https://www.youtube.com/watch?v=D1mS7tai_H0', mute:true, showControls:false, quality:'default', opacity:0.7, containment:'#videoContainment', optimizeDisplay:true, loop:true, startAt:0, autoPlay:true, showYTLogo:false, addRaster:false, realfullscreen:true}"
+                id="bgndVideo"></a>
+        </div>
+        <div class="preload-content"></div>
+    </div>
+
+    <div class="menu-trigger top-position" id="menu">
+        <button class="lines-button minus menu-toggle" id="main-menu-caller" type="button"><span
+                class="lines"></span></button>
+    </div>
+
+    <iframe src="WayTooMany.mp3" allow="autoplay" style="display:none" id="iframeAudio" loop="true"></iframe>
+
+    <div class="film-grain"></div>
+
+
+    <svg id="cursor" width="20" height="20">
+        <defs>
+            <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="white"></stop>
+                <stop offset="100%" stop-color="white"></stop>
+            </linearGradient>
+        </defs>
+        <circle r="07" cx="10" cy="10" fill="none"></circle>
+        <line x1="0" y1="0" x2="20" y2="20"></line>
+        <line x1="0" y1="20" x2="20" y2="0"></line>
+    </svg>
+
+    <div id="ui-layer">
+        <div id="menu-wrapper">
+            <div id="main-menu">
+                <div class="menu-nav-wrapper">
+                    <nav class="menu-nav">
+                        <ul class="brackets">
+                            <li class="menu">
+                                <a class="menu-state active" href="javascript:void(0)" id="fire-home">HOME</a>
+                            </li>
+                            <li class="menu">
+                                <a class="menu-state" href="javascript:void(0)" id="fire-contact">INFOS</a>
+                            </li>
+                            <li class="menu credits">
+                                <a href="#">Actavis Cheats&copy;2021.</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="upper-page current" id="home">
+
+        <div class="line-left left-position"></div>
+
+        <div class="line-right right-position">
+            <a href="#">Actavis Cheats &copy; 2025.</a>
+        </div>
+
+        <div class="transparent-borders OFF"></div>
+        <div class="center-container-home">
+
+            <div class="center-block-home">
+
+                <div class="upper-content">
+
+                    <div class="container sections">
+
+                        <div class="row">
+
+                            <div class="fin-wrapper introduction">
+
+                                <div class="fin-slides-wrapper">
+                                    <ul class="fin-slides">
+                                        <li>
+                                            <h3>
+                                                TOP TIER PROVIDER
+                                            </h3>
+                                        </li>
+                                        <li>
+                                            <h3>
+                                                WE ARE ON TOP
+                                            </h3>
+                                        </li>
+                                        <li>
+                                            <h3>
+                                                PRIVATE & UNDETECTED
+                                            </h3>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="fin-heading">
+                                    <h1 class="fin-heading glitch">
+                                        PANDA
+                                    </h1>
+                                </div>
+                                <div class="fin-subheading">
+                                    &middot; PLAY TO WIN &middot;
+                                </div>
+                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="https://discord.gg/FFKFg5q9tz" target="_blank"> DISCORD CLICK HERE </a></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--div class="lower-page" id="services">
+
+        <div class="center-container">
+
+            <div class="center-block">
+
+                <div class="lower-content">
+
+                    <div class="container sections">
+
+                        <div class="row">
+                            <h4>
+                                //
+                            </h4>
+                            <h2>
+                                Regras <span class="get-behind">Regras</span>
+                            </h2>
+                        </div>
+
+                        <div class="row">
+                            <div class="dividerOT"></div>
+                        </div>
+
+                        <div class="services-columns">
+
+                            <div class="row">
+                                <div class="col-md-6 services-padding mb40">
+                                    <h5>
+                                        <span class="awesome">Regra</span>01
+                                    </h5>
+                                    <p>
+                                        Proibido o uso de representação sonora (ex.: JBL / celular) sem que tenha um carro com o som equipado;
+                                    </p>
+                                </div>
+                                <div class="col-md-6 services-padding border-left-services mb40">
+                                    <h5>
+                                        <span class="awesome">Regra</span> 02
+                                    </h5>
+                                    <p>
+                                        Proibido ficar se socando, mesmo que sejam amigos ou apenas na brincadeira, sem a intenção de derrubar (ex.: porque o cara chutou meu carro, porque não me respondeu, porque me ignorou, etc);
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 services-padding border-top-services mt40">
+                                    <h5>
+                                        <span class="awesome">Regra</span> 03
+                                    </h5>
+                                    <p>
+                                        Proibido ficar chutando veículos estacionados ou em movimento; (Qualquer lugar que seja, a não ser que tenha uma história de RP envolvida, nada do tipo: "- Porque ele fez isso com o meu."
+                                    </p>
+                                </div>
+                                <div class="col-md-6 services-padding border-left-services border-top-services mt40">
+                                    <h5>
+                                        <span class="awesome">Regra</span> 04
+                                    </h5>
+                                    <p>
+                                        Na praça ninguém é bandido, lá é lugar de resenha e fazer amigos, existem outros lugares na cidade para serem explorados;
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div-->
+
+    <div class="lower-page" id="contact">
+
+        <div class="center-container">
+
+            <div class="center-block">
+
+                <div class="lower-content">
+
+                    <div class="container sections">
+
+                        <div class="row">
+                            <h4>
+                                //
+                            </h4>
+                            <h2>
+                                WebDevelopment <span class="get-behind">WebDevelopment</span>
+                            </h2>
+                        </div>
+
+                        <div class="row">
+                            <div class="dividerOT"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p>
+                                    ryudev<br>
+                                    <a>undeath#2933</a>
+                                    <a>| WebDeveloper<br></a>
+                                    <a>| Cheapest Services<br></a>
+                                </p>
+                                <p>
+                                    Panda<br>
+                                    <a>Pnda#1122</a>
+                                    <a>| Provider<br></a>
+                                    <a href="https://www.youtube.com/watch?v=anMplSsHUxM" target="_blank">|
+                                        Youtube<br></a>
+                                    <a href="https://www.tiktok.com/@pandatm9?lang=en" target="_blank">| Tiktok<br></a>
+                                    <a>| Cheapest Resells<br></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--JS SCRIPTS INCLUDE -->
+
     <script>
-        const events = ["Opened", "Delivered", "Sent"];
-        const subjects = ["Invoice Update", "Meeting Reminder", "Welcome Email", "Subscription Confirmation"];
-        const recipient = "bobjoebilly991@gmail.com";
-        const startDate = new Date("2025-02-08");
-        const endDate = new Date("2025-02-26");
-
-        function randomDate(start, end) {
-            return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-        }
-
-        function formatDate(date) {
-            return date.toLocaleString("en-US", { hour12: true });
-        }
-
-        function getStatusClass(event) {
-            if (event === "Opened") return "status-opened";
-            if (event === "Delivered") return "status-delivered";
-            return "status-sent";
-        }
-
-        function generateLogs() {
-            const tbody = document.getElementById("log-body");
-            for (let i = 0; i < 10; i++) {
-                let event = events[Math.floor(Math.random() * events.length)];
-                let subject = subjects[Math.floor(Math.random() * subjects.length)];
-                let date = randomDate(startDate, endDate);
-                let row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="${getStatusClass(event)}">${event}</td>
-                    <td>${recipient}</td>
-                    <td>${subject}</td>
-                    <td>${formatDate(date)}</td>
-                    <td>#EmailLog</td>
-                `;
-                tbody.appendChild(row);
-            }
-        }
-
-        generateLogs();
+        var play = false;
+        var vid = document.getElementById("muzica");
+        vid.volume = 0.1;
+        window.addEventListener('keyup', function (e) {
+            if (e.which == 69) {
+                vid.volume = Math.min(vid.volume + 0.1, 1);
+            } else if (e.which == 65) {
+                vid.volume = Math.max(vid.volume - 0.1, 0);
+            };
+        });
     </script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="assets/js/plugins.js" type="text/javascript"></script>
+    <script src="assets/js/main.js" type="text/javascript"></script>
+
+    <!--END OF JS SCRIPTS INCLUDE -->
+
 </body>
+
 </html>
