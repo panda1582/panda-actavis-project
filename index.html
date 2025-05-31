@@ -50,7 +50,10 @@
         return;
       }
 
-      const { data, error } = await supabase.from('user').insert([{ username, password }]);
+      const { data, error } = await supabase.from('users').insert([
+      { username: username, password_hash: password }
+      ]);
+
       if (error) {
         alert("Signup failed.");
         console.error(error);
