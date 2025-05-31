@@ -16,7 +16,9 @@
 <section class="section">
   <div class="container">
     <h1 class="title has-text-centered">Project Infinity Community</h1>
-    <div id="auth" class="mb-5"></div>
+    <div id="auth" class="mb-5">
+      <!-- Auth form will appear here -->
+    </div>
 
     <!-- Hidden areas that show up only after login -->
     <div id="forum" class="is-hidden">
@@ -166,35 +168,8 @@ function showAuthenticatedUI() {
   document.getElementById('loader').classList.remove('is-hidden');
 }
 
-// Check if user is already logged in on page load
-async function checkAuth() {
-  const { data, error } = await supabase.auth.getSession();
-  
-  if (data.session) {
-    // Get username from profiles table
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', data.session.user.id)
-      .single();
-
-    if (!profileError) {
-      currentUser = {
-        id: data.session.user.id,
-        username: profileData.username
-      };
-      showAuthenticatedUI();
-    } else {
-      await supabase.auth.signOut();
-      showAuthUI();
-    }
-  } else {
-    showAuthUI();
-  }
-}
-
-// Initialize the page
-checkAuth();
+// Immediately show auth form when page loads
+showAuthUI();
 </script>
 </body>
 </html>
