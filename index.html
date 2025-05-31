@@ -6,61 +6,153 @@
   <title>Project Infinity</title>
   <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" rel="stylesheet">
   <style>
-    body { background: #0e0e11; color: #f5f5f5; }
-    .box { background: #1c1c22; }
-    input { background: #2a2a2e; color: #f5f5f5; border: none; }
-    .button.is-primary { background: #09d1b1; border: none; }
-    #status { margin-top: 1rem; font-weight: bold; }
+    body { background:#0e0e11; color:#f5f5f5; }
+    .box { background:#1c1c22; }
+    input,textarea { background:#2a2a2e; color:#f5f5f5; border:none; }
+    .button.is-primary { background:#09d1b1; border:none; }
   </style>
 </head>
 <body>
 <section class="section">
   <div class="container">
     <h1 class="title has-text-centered">Project Infinity Community</h1>
-    <div class="box">
-      <div class="field">
-        <label class="label">Email</label>
-        <input class="input" type="email" id="email">
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <input class="input" type="password" id="password">
-      </div>
-      <div class="buttons">
-        <button class="button is-primary" onclick="signup()">Sign Up</button>
-        <button class="button is-link" onclick="login()">Log In</button>
-      </div>
-      <div id="status"></div>
+    <div id="auth" class="mb-5"></div>
+
+    <!-- Hidden areas that show up only after login -->
+    <div id="forum" class="is-hidden">
+      <form id="post-form" class="box">
+        <div class="field">
+          <label class="label">Topic</label>
+          <input class="input" id="post-title" required>
+        </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <textarea class="textarea" id="post-body" required></textarea>
+        </div>
+        <button class="button is-primary">Post</button>
+      </form>
+      <div id="posts"></div>
+    </div>
+
+    <div id="loader" class="has-text-centered mt-5 is-hidden">
+      <a href="loader/ProjectInfinityLoader.zip" class="button is-success">Download Loader</a>
     </div>
   </div>
 </section>
 
+<!-- Include Supabase JS library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supabase = createClient(
-    'https://zgntqxmxcteaenerzncbu.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM'
-  );
+// Initialize Supabase
+const supabaseUrl = 'https://zgntqxmctaeanerzncbu.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  async function signup() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+let currentUser = null;
 
-    const { error } = await supabase.auth.signUp({ email, password });
-    document.getElementById('status').textContent = error
-      ? '❌ ' + error.message
-      : '✅ Signed up. Check your email if confirmation is required.';
+/* ---------- Auth UI ---------- */
+function showAuthUI() {
+  document.getElementById('auth').innerHTML = `
+    <div class="box">
+      <div class="field">
+        <label class="label">Email</label>
+        <input class="input" id="email" type="email">
+      </div>
+      <div class="field">
+        <label class="label">Password</label>
+        <input class="input" id="password" type="password">
+      </div>
+      <div class="buttons">
+        <button class="button is-primary" id="signupBtn">Sign Up</button>
+        <button class="button is-link" id="loginBtn">Log In</button>
+      </div>
+    </div>`;
+
+  document.getElementById('signupBtn').addEventListener('click', signup);
+  document.getElementById('loginBtn').addEventListener('click', login);
+}
+
+/* ---------- Sign-up ---------- */
+async function signup() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  if (!email || !password) return alert('Fill in both fields.');
+  
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    
+    alert('Check your email for the confirmation link!');
+  } catch (error) {
+    alert(`Signup failed: ${error.message}`);
   }
+}
 
-  async function login() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+/* ---------- Log-in ---------- */
+async function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  if (!email || !password) return alert('Fill in both fields.');
+  
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
-    document.getElementById('status').textContent = error
-      ? '❌ ' + error.message
-      : `✅ Logged in as ${email}`;
+    if (error) throw error;
+    
+    // Successfully logged in
+    currentUser = data.user;
+    alert('✅ Logged in!');
+    showAuthenticatedUI();
+  } catch (error) {
+    alert(`Login failed: ${error.message}`);
   }
+}
+
+/* ---------- Logout ---------- */
+async function logout() {
+  const { error } = await supabase.auth.signOut();
+  currentUser = null;
+  showAuthUI();
+  document.getElementById('forum').classList.add('is-hidden');
+  document.getElementById('loader').classList.add('is-hidden');
+}
+
+/* ---------- Show authenticated UI ---------- */
+function showAuthenticatedUI() {
+  document.getElementById('auth').innerHTML = `
+    <div class="box has-text-centered">
+      <p>Welcome, ${currentUser.email}!</p>
+      <button class="button is-danger mt-3" id="logoutBtn">Log Out</button>
+    </div>`;
+  
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('forum').classList.remove('is-hidden');
+  document.getElementById('loader').classList.remove('is-hidden');
+}
+
+// Check if user is already logged in on page load
+async function checkAuth() {
+  const { data, error } = await supabase.auth.getSession();
+  
+  if (data.session) {
+    currentUser = data.session.user;
+    showAuthenticatedUI();
+  } else {
+    showAuthUI();
+  }
+}
+
+// Initialize the page
+checkAuth();
 </script>
 </body>
 </html>
