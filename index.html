@@ -4,10 +4,35 @@
   <meta charset="UTF-8">
   <title>Login System</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #message-box {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: white;
+      display: none;
+    }
+    .success {
+      background-color: #4CAF50;
+    }
+    .error {
+      background-color: #f44336;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+    }
+  </style>
 </head>
 <body>
   <h1>Login / Signup System</h1>
 
+  <!-- Auth Section -->
   <div id="auth-section">
     <h2>Sign Up</h2>
     <input type="text" id="signup-username" placeholder="Username"><br>
@@ -20,10 +45,20 @@
     <button onclick="login()">Login</button>
   </div>
 
+  <!-- User Section -->
   <div id="user-section" style="display: none;">
     <h2>Welcome, <span id="current-user"></span>!</h2>
     <button onclick="logout()">Logout</button>
+
+    <div id="post-section">
+      <h3>Create a Post</h3>
+      <textarea id="post-content" placeholder="Write something..."></textarea><br>
+      <button onclick="createPost()">Submit Post</button>
+    </div>
   </div>
+
+  <!-- Message Box -->
+  <div id="message-box"></div>
 
   <script>
     const supabaseUrl = 'https://zgntqxmctaeanerzncbu.supabase.co';
@@ -32,49 +67,58 @@
 
     let currentUser = null;
 
+    function showMessage(text, isSuccess = true) {
+      const box = document.getElementById("message-box");
+      box.textContent = text;
+      box.className = isSuccess ? "success" : "error";
+      box.style.display = "block";
+    }
+
     async function signUp() {
-      const username = document.getElementById('signup-username').value;
-      const password = document.getElementById('signup-password').value;
+      const username = document.getElementById('signup-username').value.trim();
+      const password = document.getElementById('signup-password').value.trim();
 
-      if (!username || !password) return alert("Both fields are required.");
+      if (!username || !password) {
+        showMessage("Both fields are required.", false);
+        return;
+      }
 
-      // Check if user exists
       const { data: existing, error: existError } = await supabase
-        .from('user')
+        .from('users')
         .select('*')
         .eq('username', username)
         .single();
 
       if (existing) {
-        alert("Username already taken.");
+        showMessage("Username already taken.", false);
         return;
       }
 
-      const { data, error } = await supabase.from('users').insert([
-      { username: username, password_hash: password }
+      const { error } = await supabase.from('users').insert([
+        { username, password_hash: password }
       ]);
 
       if (error) {
-        alert("Signup failed.");
         console.error(error);
+        showMessage("Signup failed.", false);
       } else {
-        alert("Signup successful. Please login.");
+        showMessage("Signup successful. Please log in.", true);
       }
     }
 
     async function login() {
-      const username = document.getElementById('login-username').value;
-      const password = document.getElementById('login-password').value;
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
 
       const { data, error } = await supabase
-        .from('user')
+        .from('users')
         .select('*')
         .eq('username', username)
-        .eq('password', password)
+        .eq('password_hash', password)
         .single();
 
       if (error || !data) {
-        alert("Invalid credentials.");
+        showMessage("Invalid credentials.", false);
         return;
       }
 
@@ -82,6 +126,7 @@
       document.getElementById('auth-section').style.display = 'none';
       document.getElementById('user-section').style.display = 'block';
       document.getElementById('current-user').textContent = currentUser.username;
+      showMessage("Login successful!", true);
     }
 
     function logout() {
@@ -90,6 +135,28 @@
       document.getElementById('user-section').style.display = 'none';
       document.getElementById('login-username').value = '';
       document.getElementById('login-password').value = '';
+      showMessage("Logged out.", true);
+    }
+
+    async function createPost() {
+      const content = document.getElementById("post-content").value.trim();
+
+      if (!content) {
+        showMessage("Post cannot be empty.", false);
+        return;
+      }
+
+      const { error } = await supabase.from("posts").insert([
+        { content, username: currentUser.username }
+      ]);
+
+      if (error) {
+        console.error(error);
+        showMessage("Failed to post.", false);
+      } else {
+        showMessage("Post submitted!", true);
+        document.getElementById("post-content").value = "";
+      }
     }
   </script>
 </body>
