@@ -38,92 +38,102 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
-<script type="module">
-  const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
-  const supabaseKey = 'YOUR_PUBLIC_ANON_KEY';
-  const headers = { 'apikey': supabaseKey, 'Content-Type': 'application/json' };
-  let currentUser = null;
+<script>
+const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
+const supabaseKey = 'YOUR_ANON_KEY';
+const headers = {
+  'apikey': supabaseKey,
+  'Content-Type': 'application/json'
+};
+let currentUser = null;
 
-  const authEl = document.getElementById('auth');
-  const forumEl = document.getElementById('forum');
-  const loaderEl = document.getElementById('loader');
+function showAuthUI() {
+  document.getElementById('auth').innerHTML = `
+    <div class="box">
+      <div class="field">
+        <label class="label">Username</label>
+        <input class="input" id="username">
+      </div>
+      <div class="field">
+        <label class="label">Password</label>
+        <input class="input" id="password" type="password">
+      </div>
+      <div class="buttons">
+        <button class="button is-primary" onclick="signup()">Sign Up</button>
+        <button class="button is-link" onclick="login()">Log In</button>
+      </div>
+    </div>`;
+}
 
-  function showLogin() {
-    authEl.innerHTML = `
-      <div class="box">
-        <div class="field">
-          <label class="label">Username</label>
-          <input class="input" id="username" />
-        </div>
-        <div class="field">
-          <label class="label">Password</label>
-          <input class="input" id="password" type="password" />
-        </div>
-        <div class="buttons">
-          <button class="button is-primary" id="signup">Sign Up</button>
-          <button class="button is-link" id="login">Log In</button>
-        </div>
-      </div>`;
-
-    document.getElementById('signup').onclick = async () => {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const hash = await bcrypt.hash(password, 10);
-      await fetch(`${supabaseUrl}/rest/v1/users`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ username, password_hash: hash })
-      });
-      alert('User created. Log in now.');
-    };
-
-    document.getElementById('login').onclick = async () => {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const res = await fetch(`${supabaseUrl}/rest/v1/users?username=eq.${username}`, {
-        headers
-      });
-      const users = await res.json();
-      if (users.length && await bcrypt.compare(password, users[0].password_hash)) {
-        currentUser = users[0];
-        initApp();
-      } else alert('Invalid credentials');
-    };
-  }
-
-  function initApp() {
-    authEl.innerHTML = `<div class="has-text-right"><button class="button is-small is-danger" onclick="location.reload()">Logout</button></div>`;
-    forumEl.classList.remove('is-hidden');
-    loaderEl.classList.remove('is-hidden');
-    loadPosts();
-  }
-
-  async function loadPosts() {
-    const res = await fetch(`${supabaseUrl}/rest/v1/posts?select=*`, { headers });
-    const posts = await res.json();
-    const postsEl = document.getElementById('posts');
-    postsEl.innerHTML = posts.map(p => `
-      <div class="box">
-        <strong>${p.title}</strong>
-        <p>${p.body}</p>
-        <small>By ${p.username}</small>
-      </div>`).join('');
-  }
-
-  document.getElementById('post-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const title = document.getElementById('post-title').value;
-    const body = document.getElementById('post-body').value;
-    await fetch(`${supabaseUrl}/rest/v1/posts`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ title, body, username: currentUser.username })
-    });
-    e.target.reset();
-    loadPosts();
+async function signup() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const hash = await bcrypt.hash(password, 10);
+  const res = await fetch(`${supabaseUrl}/rest/v1/users`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ username, password_hash: hash })
   });
+  if (res.ok) {
+    alert('Account created. You can now log in.');
+  } else {
+    alert('Signup failed. Username may already exist.');
+  }
+}
 
-  showLogin();
+async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const res = await fetch(`${supabaseUrl}/rest/v1/users?username=eq.${username}`, { headers });
+  const data = await res.json();
+  if (data.length && await bcrypt.compare(password, data[0].password_hash)) {
+    currentUser = username;
+    loadApp();
+  } else {
+    alert('Invalid credentials');
+  }
+}
+
+function loadApp() {
+  document.getElementById('auth').innerHTML = `<div class="has-text-right"><button class="button is-small is-danger" onclick="logout()">Logout</button></div>`;
+  document.getElementById('forum').classList.remove('is-hidden');
+  document.getElementById('loader').classList.remove('is-hidden');
+  loadPosts();
+}
+
+function logout() {
+  currentUser = null;
+  showAuthUI();
+  document.getElementById('forum').classList.add('is-hidden');
+  document.getElementById('loader').classList.add('is-hidden');
+}
+
+async function loadPosts() {
+  const res = await fetch(`${supabaseUrl}/rest/v1/posts?select=*`, { headers });
+  const data = await res.json();
+  const postsEl = document.getElementById('posts');
+  postsEl.innerHTML = data.map(p => `
+    <div class="box">
+      <strong>${p.title}</strong>
+      <p>${p.body}</p>
+      <small>By ${p.username}</small>
+    </div>`).join('');
+}
+
+document.getElementById('post-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const title = document.getElementById('post-title').value;
+  const body = document.getElementById('post-body').value;
+  await fetch(`${supabaseUrl}/rest/v1/posts`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ title, body, username: currentUser })
+  });
+  e.target.reset();
+  loadPosts();
+});
+
+showAuthUI();
 </script>
 </body>
 </html>
