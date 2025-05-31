@@ -1,175 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Infinity</title>
-  <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" rel="stylesheet">
-  <style>
-    body { background:#0e0e11; color:#f5f5f5; }
-    .box { background:#1c1c22; }
-    input,textarea { background:#2a2a2e; color:#f5f5f5; border:none; }
-    .button.is-primary { background:#09d1b1; border:none; }
-  </style>
+  <meta charset="UTF-8">
+  <title>Login System</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<section class="section">
-  <div class="container">
-    <h1 class="title has-text-centered">Project Infinity Community</h1>
-    <div id="auth" class="mb-5">
-      <!-- Auth form will appear here -->
-    </div>
+  <h1>Login / Signup System</h1>
 
-    <!-- Hidden areas that show up only after login -->
-    <div id="forum" class="is-hidden">
-      <form id="post-form" class="box">
-        <div class="field">
-          <label class="label">Topic</label>
-          <input class="input" id="post-title" required>
-        </div>
-        <div class="field">
-          <label class="label">Message</label>
-          <textarea class="textarea" id="post-body" required></textarea>
-        </div>
-        <button class="button is-primary">Post</button>
-      </form>
-      <div id="posts"></div>
-    </div>
+  <div id="auth-section">
+    <h2>Sign Up</h2>
+    <input type="text" id="signup-username" placeholder="Username"><br>
+    <input type="password" id="signup-password" placeholder="Password"><br>
+    <button onclick="signUp()">Sign Up</button>
 
-    <div id="loader" class="has-text-centered mt-5 is-hidden">
-      <a href="loader/ProjectInfinityLoader.zip" class="button is-success">Download Loader</a>
-    </div>
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username"><br>
+    <input type="password" id="login-password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
   </div>
-</section>
 
-<!-- Include Supabase JS library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// Initialize Supabase
-const supabaseUrl = 'https://zgntqxmctaeanerzncbu.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  <div id="user-section" style="display: none;">
+    <h2>Welcome, <span id="current-user"></span>!</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-let currentUser = null;
+  <script>
+    const supabaseUrl = 'https://zgntqxmctaeanerzncbu.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* ---------- Auth UI ---------- */
-function showAuthUI() {
-  document.getElementById('auth').innerHTML = `
-    <div class="box">
-      <div class="field">
-        <label class="label">Username</label>
-        <input class="input" id="username">
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <input class="input" id="password" type="password">
-      </div>
-      <div class="buttons">
-        <button class="button is-primary" id="signupBtn">Sign Up</button>
-        <button class="button is-link" id="loginBtn">Log In</button>
-      </div>
-    </div>`;
+    let currentUser = null;
 
-  document.getElementById('signupBtn').addEventListener('click', signup);
-  document.getElementById('loginBtn').addEventListener('click', login);
-}
+    async function signUp() {
+      const username = document.getElementById('signup-username').value;
+      const password = document.getElementById('signup-password').value;
 
-/* ---------- Sign-up ---------- */
-async function signup() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  
-  if (!username || !password) return alert('Fill in both fields.');
-  
-  try {
-    // First create auth user with email (using username as email for simplicity)
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: `${username}@projectinfinity.com`, // Using a dummy domain
-      password: password,
-    });
+      if (!username || !password) return alert("Both fields are required.");
 
-    if (authError) throw authError;
-    
-    // Then store username in profiles table
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        { 
-          id: authData.user.id, 
-          username: username 
-        }
-      ]);
+      // Check if user exists
+      const { data: existing, error: existError } = await supabase
+        .from('user')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-    if (profileError) throw profileError;
-    
-    alert('✅ Account created! You can now log in.');
-  } catch (error) {
-    alert(`❌ Signup failed: ${error.message}`);
-  }
-}
+      if (existing) {
+        alert("Username already taken.");
+        return;
+      }
 
-/* ---------- Log-in ---------- */
-async function login() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  
-  if (!username || !password) return alert('Fill in both fields.');
-  
-  try {
-    // Login with email (using username as email)
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: `${username}@projectinfinity.com`, // Same dummy domain
-      password: password,
-    });
+      const { data, error } = await supabase.from('user').insert([{ username, password }]);
+      if (error) {
+        alert("Signup failed.");
+        console.error(error);
+      } else {
+        alert("Signup successful. Please login.");
+      }
+    }
 
-    if (error) throw error;
-    
-    // Get the username from profiles table
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', data.user.id)
-      .single();
+    async function login() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
 
-    if (profileError) throw profileError;
-    
-    // Successfully logged in
-    currentUser = {
-      id: data.user.id,
-      username: profileData.username
-    };
-    
-    alert('✅ Logged in!');
-    showAuthenticatedUI();
-  } catch (error) {
-    alert(`❌ Login failed: ${error.message}`);
-  }
-}
+      const { data, error } = await supabase
+        .from('user')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .single();
 
-/* ---------- Logout ---------- */
-async function logout() {
-  const { error } = await supabase.auth.signOut();
-  currentUser = null;
-  showAuthUI();
-  document.getElementById('forum').classList.add('is-hidden');
-  document.getElementById('loader').classList.add('is-hidden');
-}
+      if (error || !data) {
+        alert("Invalid credentials.");
+        return;
+      }
 
-/* ---------- Show authenticated UI ---------- */
-function showAuthenticatedUI() {
-  document.getElementById('auth').innerHTML = `
-    <div class="box has-text-centered">
-      <p>Welcome, ${currentUser.username}!</p>
-      <button class="button is-danger mt-3" id="logoutBtn">Log Out</button>
-    </div>`;
-  
-  document.getElementById('logoutBtn').addEventListener('click', logout);
-  document.getElementById('forum').classList.remove('is-hidden');
-  document.getElementById('loader').classList.remove('is-hidden');
-}
+      currentUser = data;
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('user-section').style.display = 'block';
+      document.getElementById('current-user').textContent = currentUser.username;
+    }
 
-// Immediately show auth form when page loads
-showAuthUI();
-</script>
+    function logout() {
+      currentUser = null;
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('user-section').style.display = 'none';
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+    }
+  </script>
 </body>
 </html>
