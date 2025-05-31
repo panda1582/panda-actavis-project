@@ -1,284 +1,129 @@
 <!DOCTYPE html>
-<html lang="pt_BR">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta content="" name="description">
-    <meta content="" name="author">
-    <meta content="" name="keywords">
-    <title>Actavis Cheats</title>
-    <meta
-        content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi"
-        name="viewport">
-
-    <!--CSS INCLUDES -->
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <link href="assets/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
-    <link href="assets/css/style-dark.css" media="all" rel="stylesheet" type="text/css">
-    <link href="assets/css/css.css" rel="stylesheet">
-    <link href="assets/css/fontawesome-all.min.css" media="all" rel="stylesheet" type="text/css">
-    <link href="assets/css/colors/yellow-2.css" media="screen" rel="stylesheet" title="yellow-2" type="text/css">
-    <link
-        href="http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900%7CDosis:200,300,400,500,600,700,800%7COswald:300,400,700%7CMontserrat:400,700"
-        rel="stylesheet" type="text/css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Infinity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" rel="stylesheet">
+  <style>
+    body { background: #0e0e11; color: #f5f5f5; }
+    .box { background: #1c1c22; }
+    input, textarea { background: #2a2a2e; color: #f5f5f5; border: none; }
+    .button.is-primary { background-color: #09d1b1; border: none; }
+  </style>
 </head>
-
 <body>
-    <div id="preloader">
-        <div id="preloader-status">
-            <div class="preloader-position preloader-effect">
-                <span></span>
-            </div>
+<section class="section">
+  <div class="container">
+    <h1 class="title has-text-centered">Project Infinity Community</h1>
+    <div id="auth" class="mb-5"></div>
+    <div id="forum" class="is-hidden">
+      <form id="post-form" class="box">
+        <div class="field">
+          <label class="label">Topic</label>
+          <input class="input" type="text" id="post-title" required />
         </div>
+        <div class="field">
+          <label class="label">Message</label>
+          <textarea class="textarea" id="post-body" required></textarea>
+        </div>
+        <button class="button is-primary">Post</button>
+      </form>
+      <div id="posts"></div>
     </div>
-
-    <div class="hero-fullscreen hero-bg">
-        <div class="slide-YT hero-fullscreen">
-            <div class="slide bg-img-YT"></div>
-            <div id="videoContainment"></div>
-            <a class="player"
-                data-property="{videoURL:'https://www.youtube.com/watch?v=D1mS7tai_H0', mute:true, showControls:false, quality:'default', opacity:0.7, containment:'#videoContainment', optimizeDisplay:true, loop:true, startAt:0, autoPlay:true, showYTLogo:false, addRaster:false, realfullscreen:true}"
-                id="bgndVideo"></a>
-        </div>
-        <div class="preload-content"></div>
+    <div id="loader" class="has-text-centered mt-5 is-hidden">
+      <a href="loader/ProjectInfinityLoader.zip" class="button is-success">Download Loader</a>
     </div>
+  </div>
+</section>
 
-    <div class="menu-trigger top-position" id="menu">
-        <button class="lines-button minus menu-toggle" id="main-menu-caller" type="button"><span
-                class="lines"></span></button>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+<script type="module">
+  const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
+  const supabaseKey = 'YOUR_PUBLIC_ANON_KEY';
+  const headers = { 'apikey': supabaseKey, 'Content-Type': 'application/json' };
+  let currentUser = null;
 
-    <iframe src="WayTooMany.mp3" allow="autoplay" style="display:none" id="iframeAudio" loop="true"></iframe>
+  const authEl = document.getElementById('auth');
+  const forumEl = document.getElementById('forum');
+  const loaderEl = document.getElementById('loader');
 
-    <div class="film-grain"></div>
-
-
-    <svg id="cursor" width="20" height="20">
-        <defs>
-            <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="white"></stop>
-                <stop offset="100%" stop-color="white"></stop>
-            </linearGradient>
-        </defs>
-        <circle r="07" cx="10" cy="10" fill="none"></circle>
-        <line x1="0" y1="0" x2="20" y2="20"></line>
-        <line x1="0" y1="20" x2="20" y2="0"></line>
-    </svg>
-
-    <div id="ui-layer">
-        <div id="menu-wrapper">
-            <div id="main-menu">
-                <div class="menu-nav-wrapper">
-                    <nav class="menu-nav">
-                        <ul class="brackets">
-                            <li class="menu">
-                                <a class="menu-state active" href="javascript:void(0)" id="fire-home">HOME</a>
-                            </li>
-                            <li class="menu">
-                                <a class="menu-state" href="javascript:void(0)" id="fire-contact">INFOS</a>
-                            </li>
-                            <li class="menu credits">
-                                <a href="#">Actavis Cheats&copy;2021.</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+  function showLogin() {
+    authEl.innerHTML = `
+      <div class="box">
+        <div class="field">
+          <label class="label">Username</label>
+          <input class="input" id="username" />
         </div>
-    </div>
-    <div class="upper-page current" id="home">
-
-        <div class="line-left left-position"></div>
-
-        <div class="line-right right-position">
-            <a href="#">Actavis Cheats &copy; 2025.</a>
+        <div class="field">
+          <label class="label">Password</label>
+          <input class="input" id="password" type="password" />
         </div>
-
-        <div class="transparent-borders OFF"></div>
-        <div class="center-container-home">
-
-            <div class="center-block-home">
-
-                <div class="upper-content">
-
-                    <div class="container sections">
-
-                        <div class="row">
-
-                            <div class="fin-wrapper introduction">
-
-                                <div class="fin-slides-wrapper">
-                                    <ul class="fin-slides">
-                                        <li>
-                                            <h3>
-                                                TOP TIER PROVIDER
-                                            </h3>
-                                        </li>
-                                        <li>
-                                            <h3>
-                                                WE ARE ON TOP
-                                            </h3>
-                                        </li>
-                                        <li>
-                                            <h3>
-                                                PRIVATE & UNDETECTED
-                                            </h3>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="fin-heading">
-                                    <h1 class="fin-heading glitch">
-                                        Actavis
-                                    </h1>
-                                </div>
-                                <div class="fin-subheading">
-                                    &middot; PLAY TO WIN &middot;
-                                </div>
-                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="https://discord.gg/actavis" target="_blank"> DISCORD CLICK HERE </a></i></span>
-                                </div>
-                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="https://files.catbox.moe/cyviun.rar" target="_blank"> UNLOCK LOADER CLICK HERE </a></i></span>
-                                </div>
-                                <span class="awesome-contact"><i class="" style="margin-left: 415px;"><a href="" target="_blank"> PRO LOADER CLICK HERE </a></i></span>
-
-                            
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="buttons">
+          <button class="button is-primary" id="signup">Sign Up</button>
+          <button class="button is-link" id="login">Log In</button>
         </div>
-    </div>
+      </div>`;
 
-    <!--div class="lower-page" id="services">
+    document.getElementById('signup').onclick = async () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const hash = await bcrypt.hash(password, 10);
+      await fetch(`${supabaseUrl}/rest/v1/users`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ username, password_hash: hash })
+      });
+      alert('User created. Log in now.');
+    };
 
-        <div class="center-container">
+    document.getElementById('login').onclick = async () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch(`${supabaseUrl}/rest/v1/users?username=eq.${username}`, {
+        headers
+      });
+      const users = await res.json();
+      if (users.length && await bcrypt.compare(password, users[0].password_hash)) {
+        currentUser = users[0];
+        initApp();
+      } else alert('Invalid credentials');
+    };
+  }
 
-            <div class="center-block">
+  function initApp() {
+    authEl.innerHTML = `<div class="has-text-right"><button class="button is-small is-danger" onclick="location.reload()">Logout</button></div>`;
+    forumEl.classList.remove('is-hidden');
+    loaderEl.classList.remove('is-hidden');
+    loadPosts();
+  }
 
-                <div class="lower-content">
+  async function loadPosts() {
+    const res = await fetch(`${supabaseUrl}/rest/v1/posts?select=*`, { headers });
+    const posts = await res.json();
+    const postsEl = document.getElementById('posts');
+    postsEl.innerHTML = posts.map(p => `
+      <div class="box">
+        <strong>${p.title}</strong>
+        <p>${p.body}</p>
+        <small>By ${p.username}</small>
+      </div>`).join('');
+  }
 
-                    <div class="container sections">
+  document.getElementById('post-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const title = document.getElementById('post-title').value;
+    const body = document.getElementById('post-body').value;
+    await fetch(`${supabaseUrl}/rest/v1/posts`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, body, username: currentUser.username })
+    });
+    e.target.reset();
+    loadPosts();
+  });
 
-                        <div class="row">
-                            <h4>
-                                //
-                            </h4>
-                            <h2>
-                                Regras <span class="get-behind">Regras</span>
-                            </h2>
-                        </div>
-
-                        <div class="row">
-                            <div class="dividerOT"></div>
-                        </div>
-
-                        <div class="services-columns">
-
-                            <div class="row">
-                                <div class="col-md-6 services-padding mb40">
-                                    <h5>
-                                        <span class="awesome">Regra</span>01
-                                    </h5>
-                                    <p>
-                                        Proibido o uso de representação sonora (ex.: JBL / celular) sem que tenha um carro com o som equipado;
-                                    </p>
-                                </div>
-                                <div class="col-md-6 services-padding border-left-services mb40">
-                                    <h5>
-                                        <span class="awesome">Regra</span> 02
-                                    </h5>
-                                    <p>
-                                        Proibido ficar se socando, mesmo que sejam amigos ou apenas na brincadeira, sem a intenção de derrubar (ex.: porque o cara chutou meu carro, porque não me respondeu, porque me ignorou, etc);
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 services-padding border-top-services mt40">
-                                    <h5>
-                                        <span class="awesome">Regra</span> 03
-                                    </h5>
-                                    <p>
-                                        Proibido ficar chutando veículos estacionados ou em movimento; (Qualquer lugar que seja, a não ser que tenha uma história de RP envolvida, nada do tipo: "- Porque ele fez isso com o meu."
-                                    </p>
-                                </div>
-                                <div class="col-md-6 services-padding border-left-services border-top-services mt40">
-                                    <h5>
-                                        <span class="awesome">Regra</span> 04
-                                    </h5>
-                                    <p>
-                                        Na praça ninguém é bandido, lá é lugar de resenha e fazer amigos, existem outros lugares na cidade para serem explorados;
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div-->
-
-    <div class="lower-page" id="contact">
-
-        <div class="center-container">
-
-            <div class="center-block">
-
-                <div class="lower-content">
-
-                    <div class="container sections">
-
-                        <div class="row">
-                            <h4>
-                                //
-                            </h4>
-                            <h2>
-                                WebDevelopment <span class="get-behind">WebDevelopment</span>
-                            </h2>
-                        </div>
-
-                        <div class="row">
-                            <div class="dividerOT"></div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p>
-                                    ryudev<br>
-                                    <a>| WebDeveloper<br></a>
-
-                                </p>
-                                <p>
-
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--JS SCRIPTS INCLUDE -->
-
-    <script>
-        var play = false;
-        var vid = document.getElementById("muzica");
-        vid.volume = 0.1;
-        window.addEventListener('keyup', function (e) {
-            if (e.which == 69) {
-                vid.volume = Math.min(vid.volume + 0.1, 1);
-            } else if (e.which == 65) {
-                vid.volume = Math.max(vid.volume - 0.1, 0);
-            };
-        });
-    </script>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
-    <script src="assets/js/plugins.js" type="text/javascript"></script>
-    <script src="assets/js/main.js" type="text/javascript"></script>
-
-    <!--END OF JS SCRIPTS INCLUDE -->
-
+  showLogin();
+</script>
 </body>
-
 </html>
