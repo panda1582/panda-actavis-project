@@ -64,10 +64,10 @@ function showAuthUI() {
       </div>
     </div>`;
 
-  // ✅ Attach handlers AFTER DOM is inserted
   document.getElementById('signupBtn').addEventListener('click', signup);
   document.getElementById('loginBtn').addEventListener('click', login);
 }
+
 async function signup() {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
@@ -78,9 +78,9 @@ async function signup() {
     body: JSON.stringify({ username, password_hash: hash })
   });
   if (res.ok) {
-    alert('Account created. You can now log in.');
+    alert('✅ Successfully signed up. You can now log in.');
   } else {
-    alert('Signup failed. Username may already exist.');
+    alert('❌ Signup failed. Username may already exist.');
   }
 }
 
@@ -91,17 +91,11 @@ async function login() {
   const data = await res.json();
   if (data.length && await bcrypt.compare(password, data[0].password_hash)) {
     currentUser = username;
-    loadApp();
+    alert('✅ Successfully logged in! Redirecting...');
+    window.location.href = 'dashboard.html'; // Change this to your desired page
   } else {
-    alert('Invalid credentials');
+    alert('❌ Invalid credentials');
   }
-}
-
-function loadApp() {
-  document.getElementById('auth').innerHTML = `<div class="has-text-right"><button class="button is-small is-danger" onclick="logout()">Logout</button></div>`;
-  document.getElementById('forum').classList.remove('is-hidden');
-  document.getElementById('loader').classList.remove('is-hidden');
-  loadPosts();
 }
 
 function logout() {
@@ -111,30 +105,7 @@ function logout() {
   document.getElementById('loader').classList.add('is-hidden');
 }
 
-async function loadPosts() {
-  const res = await fetch(`${supabaseUrl}/rest/v1/posts?select=*`, { headers });
-  const data = await res.json();
-  const postsEl = document.getElementById('posts');
-  postsEl.innerHTML = data.map(p => `
-    <div class="box">
-      <strong>${p.title}</strong>
-      <p>${p.body}</p>
-      <small>By ${p.username}</small>
-    </div>`).join('');
-}
-
-document.getElementById('post-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const title = document.getElementById('post-title').value;
-  const body = document.getElementById('post-body').value;
-  await fetch(`${supabaseUrl}/rest/v1/posts`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ title, body, username: currentUser })
-  });
-  e.target.reset();
-  loadPosts();
-});
+// Keep rest of functions in other page (dashboard.html if needed)
 
 showAuthUI();
 </script>
