@@ -6,130 +6,61 @@
   <title>Project Infinity</title>
   <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" rel="stylesheet">
   <style>
-    body { background:#0e0e11; color:#f5f5f5; }
-    .box { background:#1c1c22; }
-    input,textarea { background:#2a2a2e; color:#f5f5f5; border:none; }
-    .button.is-primary { background:#09d1b1; border:none; }
+    body { background: #0e0e11; color: #f5f5f5; }
+    .box { background: #1c1c22; }
+    input { background: #2a2a2e; color: #f5f5f5; border: none; }
+    .button.is-primary { background: #09d1b1; border: none; }
+    #status { margin-top: 1rem; font-weight: bold; }
   </style>
 </head>
 <body>
 <section class="section">
   <div class="container">
     <h1 class="title has-text-centered">Project Infinity Community</h1>
-    <div id="auth" class="mb-5"></div>
-
-    <!-- Hidden areas that show up only after login -->
-    <div id="forum" class="is-hidden">
-      <form id="post-form" class="box">
-        <div class="field">
-          <label class="label">Topic</label>
-          <input class="input" id="post-title" required>
-        </div>
-        <div class="field">
-          <label class="label">Message</label>
-          <textarea class="textarea" id="post-body" required></textarea>
-        </div>
-        <button class="button is-primary">Post</button>
-      </form>
-      <div id="posts"></div>
-    </div>
-
-    <div id="loader" class="has-text-centered mt-5 is-hidden">
-      <a href="loader/ProjectInfinityLoader.zip" class="button is-success">Download Loader</a>
+    <div class="box">
+      <div class="field">
+        <label class="label">Email</label>
+        <input class="input" type="email" id="email">
+      </div>
+      <div class="field">
+        <label class="label">Password</label>
+        <input class="input" type="password" id="password">
+      </div>
+      <div class="buttons">
+        <button class="button is-primary" onclick="signup()">Sign Up</button>
+        <button class="button is-link" onclick="login()">Log In</button>
+      </div>
+      <div id="status"></div>
     </div>
   </div>
 </section>
 
-<!-- bcryptjs (sync helpers available) -->
-<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ---------- Supabase config ---------- */
-const supabaseUrl = 'https://zgntqxmctaeanerzncbu.supabase.co';
-/*  !!  USE THE PUBLIC “anon” KEY ONLY  !! */
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM';
-
-const baseHeaders = {
-  apikey: supabaseKey,
-  Authorization: `Bearer ${supabaseKey}`,
-  'Content-Type': 'application/json'
-};
-
-let currentUser = null;
-
-/* ---------- Auth UI ---------- */
-function showAuthUI() {
-  document.getElementById('auth').innerHTML = `
-    <div class="box">
-      <div class="field">
-        <label class="label">Username</label>
-        <input class="input" id="username">
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <input class="input" id="password" type="password">
-      </div>
-      <div class="buttons">
-        <button class="button is-primary" id="signupBtn">Sign Up</button>
-        <button class="button is-link"    id="loginBtn">Log In</button>
-      </div>
-    </div>`;
-
-  document.getElementById('signupBtn').addEventListener('click', signup);
-  document.getElementById('loginBtn').addEventListener('click', login);
-}
-
-/* ---------- Sign-up ---------- */
-async function signup() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if (!username || !password) return alert('Fill in both fields.');
-
-  const hash = bcrypt.hashSync(password, 10);   // sync variant ✅
-  const res  = await fetch(`${supabaseUrl}/rest/v1/users`, {
-    method: 'POST',
-    headers: { ...baseHeaders, Prefer: 'return=representation' },
-    body: JSON.stringify({ username, password_hash: hash })
-  });
-
-  if (res.ok) {
-    alert('✅ Signed up! You can now log in.');
-  } else {
-    const { message } = await res.json();
-    alert(`❌ Signup failed: ${message || res.statusText}`);
-  }
-}
-
-/* ---------- Log-in ---------- */
-async function login() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if (!username || !password) return alert('Fill in both fields.');
-
-  /* NEED select=* or select=password_hash, otherwise 400 */
-  const res  = await fetch(
-    `${supabaseUrl}/rest/v1/users?username=eq.${encodeURIComponent(username)}&select=password_hash`,
-    { headers: baseHeaders }
+  const supabase = createClient(
+    'https://zgntqxmxcteaenerzncbu.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnbnRxeG1jdGFlYW5lcnpuY2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3MTA5MjQsImV4cCI6MjA2NDI4NjkyNH0.yC1slPrw8wosSTKpHoYXWtFcIoTbcmplU9pYX9buWmM'
   );
-  const rows = await res.json();
 
-  if (rows.length && bcrypt.compareSync(password, rows[0].password_hash)) {
-    currentUser = username;
-    alert('✅ Logged in! Redirecting…');
-    /* 👇 Change to whatever page/section you really want */
-    window.location.href = 'dashboard.html';
-  } else {
-    alert('❌ Invalid credentials');
+  async function signup() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    const { error } = await supabase.auth.signUp({ email, password });
+    document.getElementById('status').textContent = error
+      ? '❌ ' + error.message
+      : '✅ Signed up. Check your email if confirmation is required.';
   }
-}
 
-function logout() {
-  currentUser = null;
-  showAuthUI();
-  document.getElementById('forum').classList.add('is-hidden');
-  document.getElementById('loader').classList.add('is-hidden');
-}
+  async function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-showAuthUI();
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+    document.getElementById('status').textContent = error
+      ? '❌ ' + error.message
+      : `✅ Logged in as ${email}`;
+  }
 </script>
 </body>
 </html>
