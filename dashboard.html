@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Project Infinity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css" rel="stylesheet">
+  <style>
+    body { background: #0e0e11; color: #f5f5f5; }
+    .box { background: #1c1c22; }
+    .navbar { background: #1c1c22; }
+    .button.is-danger { margin-left: auto; }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <nav class="navbar mb-5">
+        <div class="navbar-brand">
+          <span class="navbar-item has-text-weight-bold">✅ Logged in as <span id="username">Loading...</span></span>
+        </div>
+        <div class="navbar-end">
+          <button class="button is-danger" onclick="logout()">Log Out</button>
+        </div>
+      </nav>
+
+      <div class="box">
+        <h2 class="title is-4">Welcome to Project Infinity Dashboard</h2>
+        <p>You can extend this dashboard to show forum posts, loader downloads, and more.</p>
+      </div>
+    </div>
+  </section>
+
+<script>
+  // Dummy session using localStorage (not secure, just for demo purposes)
+  const user = localStorage.getItem('loggedInUser');
+  if (!user) {
+    alert('⚠️ You are not logged in.');
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('username').textContent = user;
+  }
+
+  function logout() {
+    localStorage.removeItem('loggedInUser');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>
