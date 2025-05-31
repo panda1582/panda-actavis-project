@@ -59,10 +59,14 @@ function showAuthUI() {
         <input class="input" id="password" type="password">
       </div>
       <div class="buttons">
-        <button class="button is-primary" onclick="signup()">Sign Up</button>
-        <button class="button is-link" onclick="login()">Log In</button>
+        <button class="button is-primary" id="signupBtn">Sign Up</button>
+        <button class="button is-link" id="loginBtn">Log In</button>
       </div>
     </div>`;
+
+  // ✅ Attach handlers AFTER DOM is inserted
+  document.getElementById('signupBtn').addEventListener('click', signup);
+  document.getElementById('loginBtn').addEventListener('click', login);
 }
 
 async function signup() {
